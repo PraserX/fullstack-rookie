@@ -39,7 +39,7 @@ func main() {
 	x, y := div(10, 7)
 	fmt.Println("Div result:", x, y)
 
-	x, y := div2(10, 7)
+	x, y = div2(10, 7)
 	fmt.Println("Div result:", x, y)
 
 	// Declarations and definitions
