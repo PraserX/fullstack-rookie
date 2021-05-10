@@ -1,0 +1,20 @@
+h1 {
+    font-size: 24px;
+}
+
+#myheader {
+    font-style: italic;
+}
+
+.header {
+    color: blue;
+}
+
+.header:hover {
+    text-decoration: underline;
+}
+
+.mujemail {
+    color: red;
+    border-radius: 0rem;
+}

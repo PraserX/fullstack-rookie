@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple messaging</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+        integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous">
+    </script>
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1">Your message:</label>
+                                <textarea class="form-control" id="yourmessage" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="post()">Post comment</button>
+                        </form>
+                    </div>
+
+                    <div class="col-12">
+                        <h2>Messages</h2>
+                        <div id="messages">    
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <form>
+                    <div class="form-group">
+                        <label for="nickname">Nickname</label>
+                        <input type="text" class="form-control" id="nickname" aria-describedby="nicknameHelp">
+                        <small id="nicknameHelp" class="form-text text-muted">Type your nickname.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname">E-mail</label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                        <small id="emailHelp" class="form-text text-muted">Type your email</small>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="setProfile()">Set profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            loadProfile();
+            update();
+            setInterval(update, 5000);
+        });
+
+        function update() {
+            getComments("http://localhost:28080/api/v1/comments")
+                .then(response => response.json())
+                .then(data => {
+                    var $messages = $("#messages"); 
+                    $messages.empty();
+
+                    for (message of data.comments) {
+                        console.log(message);
+                        var message = getHTMLMessage(message.timestamp, message.user.nickname, message.user.email, message.comment);
+                        console.log(message);
+
+                        var htmlMessage = $.parseHTML(message);
+                        $messages.append(htmlMessage);
+                    }
+                });
+        }
+
+        function post() {
+            // Comment  string `json:"comment"`
+            // Nickname string `json:"nickname"`
+            // Email    string `json:"email"`
+            
+            var data = {
+                "comment": $("#yourmessage").val(),
+                "nickname": getProfileNickname(),
+                "email": getProfileEmail()
+            }
+            
+            postComment("http://localhost:28080/api/v1/comments", data);
+
+            $("#yourmessage").val("");
+            update();
+        }
+
+        function getHTMLMessage(datetime, nickname, email, comment) {
+            var message = '<div class="card" style="width: 100%;">\
+                    <div class="card-body">\
+                        <h5 class="card-title">'+parseDatetime(datetime)+', '+nickname+'</h5>\
+                        <h6 class="card-subtitle mb-2 text-muted">'+email+'</h6>\
+                        <p class="card-text">'+comment+'</p>\
+                    </div>\
+                </div>'
+
+            return message
+        }
+
+        function parseDatetime(datetime) {
+            var myDate = new Date(datetime);
+            return myDate.toLocaleString()
+        }
+
+        function setProfile() {
+            var nickname = $("#nickname").val()
+            var email = $("#email").val()
+
+            window.localStorage.setItem('nickname', nickname);
+            window.localStorage.setItem('email', email);
+        }
+
+        function loadProfile() {
+            $("#nickname").val(window.localStorage.getItem('nickname'));
+            $("#email").val(window.localStorage.getItem('email')); 
+        }
+
+        function getProfileNickname() {
+            return window.localStorage.getItem('nickname');
+        }
+
+        function getProfileEmail() {
+            return window.localStorage.getItem('email');
+        }
+    </script>
+</body>
+
+</html>

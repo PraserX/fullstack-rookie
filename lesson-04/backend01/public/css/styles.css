@@ -1,0 +1,26 @@
+body {
+    padding: 25px 0px;
+}
+
+body,
+.btn,
+.form-control{
+    font-size: 12px;
+}
+
+h2 {
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+h5 {
+    font-size: 14px;
+}
+
+h6 {
+    font-size: 12px;
+}
+
+.card {
+    margin-bottom: 15px;
+}
