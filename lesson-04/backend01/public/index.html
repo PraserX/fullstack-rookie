@@ -77,10 +77,7 @@
                     $messages.empty();
 
                     for (message of data.comments) {
-                        console.log(message);
                         var message = getHTMLMessage(message.timestamp, message.user.nickname, message.user.email, message.comment);
-                        console.log(message);
-
                         var htmlMessage = $.parseHTML(message);
                         $messages.append(htmlMessage);
                     }

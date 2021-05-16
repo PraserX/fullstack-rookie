@@ -6,6 +6,7 @@ import (
 
 	"github.com/PraserX/fullstack-rookie/pkg/database"
 	"github.com/PraserX/fullstack-rookie/pkg/database/model"
+	"github.com/PraserX/fullstack-rookie/pkg/webserver/helpers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,6 +37,10 @@ func LocationComments(router *gin.RouterGroup, db *database.Database) {
 		if err = context.ShouldBindJSON(&comment); err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{"error": "bad input"})
 			return
+		}
+
+		if bad, _ := helpers.ContainsForbiddenChars(comment); bad {
+			context.JSON(http.StatusBadRequest, gin.H{"error": "forbidden chars"})
 		}
 
 		if !db.UserExists(comment.Email) {

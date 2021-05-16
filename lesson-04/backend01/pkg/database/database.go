@@ -27,7 +27,7 @@ func New(opts ...Option) (*Database, error) {
 
 	db.orm, err = gorm.Open(sqlite.Open(options.Path), &gorm.Config{})
 	if err != nil {
-		return nil, fmt.Errorf("cannot create database")
+		return nil, fmt.Errorf("cannot connect/create database")
 	}
 
 	db.orm.AutoMigrate(&model.User{}, &model.Comment{})
