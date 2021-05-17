@@ -1,0 +1,5 @@
+app/dist
+app/node_modules
+bin/*
+public/*
+*.db
