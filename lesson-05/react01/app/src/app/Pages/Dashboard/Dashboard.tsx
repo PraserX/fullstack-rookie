@@ -180,7 +180,7 @@ const Dashboard: React.FunctionComponent = () => {
           <EmptyState>
             <Title headingLevel="h5" size="lg">
               Loading ...
-          </Title>
+            </Title>
             <EmptyStateBody>
               <Spinner size="lg" />
             </EmptyStateBody>
